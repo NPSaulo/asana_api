@@ -46,3 +46,4 @@ with open('dados.json', 'r', encoding='utf-8') as f:
     dados = json.load(f)
 
 dados['processos'] = processos
+dados['key'] = os.getenv('ASANA_KEY')
