@@ -6,7 +6,7 @@ from asana.rest import ApiException
 from pprint import pprint
 from datetime import datetime, timedelta
 
-def main():
+def main(hoje, hoje_str):
     #1 EXTRAINDO TODAS AS PUBS DOS QUATRO ADVOGADOS
     set_id_pubs = set()
     num_pubs = 0
@@ -35,7 +35,7 @@ def main():
             if area_processo == 'SERVIDOR PUBLICO':
                 responsavel = dados['membros']['Saulo Niederle']
                 nome_tarefa = 'OUTROS'
-                criar_tarefa_geral(nome_tarefa, pub, dados, responsavel)
+                criar_tarefa_geral(nome_tarefa, pub, dados, responsavel, hoje_str)
             else:
                 conteudo_pub = extrair_conteudo_pub(pub['texto'], cliente='ANTHROPIC')
                 print(conteudo_pub)
@@ -43,21 +43,24 @@ def main():
                     conteudo_pub = especificar_pub_outros(pub['texto'], cliente='ANTHROPIC')
                     print(conteudo_pub)
                     responsavel = dados['membros']['Alan Almeida']
-                    criar_tarefa_geral(conteudo_pub, pub, dados, responsavel)
+                    criar_tarefa_geral(conteudo_pub, pub, dados, responsavel, hoje_str)
                 elif conteudo_pub == 'AUDIENCIA_CONCILIACAO': #temporariamente desativado
                     #data_hora_audiencia = extrair_data_audiencia(pub['texto'], cliente='ANTHROPIC')
                     #print(data_hora_audiencia)
                     #criar_tarefa_audiencia_conciliacao(dados, pub, data_audiencia) #aqui criar tanto tarefa para aud quanto para impugcont
                     pass
                 elif conteudo_pub == 'DEFESA_CONTRARRAZOES':
-                    criar_tarefa_defesa(pub, dados)
+                    criar_tarefa_defesa(pub, dados, hoje)
                 else:
                     responsavel = dados['membros']['Alan Almeida']
-                    criar_tarefa_geral(conteudo_pub, pub, dados, responsavel)
+                    criar_tarefa_geral(conteudo_pub, pub, dados, responsavel, hoje_str)
 
     print(f"Número de publicações localizadas aqui: {cont_pubs}")
 
-if __name__ == '__main__':    
-    main()
+if __name__ == '__main__': 
+    #hoje = datetime.now() - timedelta(days=1)
+    hoje = datetime.now()
+    hoje_str = hoje.strftime('%Y-%m-%d')   
+    main(hoje, hoje_str)
 
     

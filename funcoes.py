@@ -9,8 +9,7 @@ from claude import anthropic_enviar_prompt_especificar_pub_outros, anthropic_env
 from dados import dados
 
 load_dotenv()
-hoje = datetime.now()
-hoje_str = hoje.strftime('%Y-%m-%d')
+
 
 
 def get_project(project_gid):
@@ -58,7 +57,7 @@ def get_projects():
         print("Exception when calling ProjectsApi->get_projects_for_workspace: %s\n" % e)
 
 
-def create_tasks_pubs(pubs):
+def create_tasks_pubs(pubs, hoje):
     configuration = asana.Configuration()
     configuration.access_token = key
     api_client = asana.ApiClient(configuration)
@@ -93,7 +92,7 @@ def extrair_area_processo(dados, pub):
     area_processo = processo_no_df['natureza'].values[0]
     return area_processo
 
-def criar_tarefa_geral(nome_tarefa, pub, dados, responsavel):
+def criar_tarefa_geral(nome_tarefa, pub, dados, responsavel, hoje_str):
     configuration = asana.Configuration()
     configuration.access_token = os.getenv('ASANA_KEY')
     api_client = asana.ApiClient(configuration)
@@ -120,7 +119,7 @@ def criar_tarefa_geral(nome_tarefa, pub, dados, responsavel):
         print("Exception when calling TasksApi->create_task: %s\n" % e)
     return
 
-def criar_tarefa_defesa(pub, dados):
+def criar_tarefa_defesa(pub, dados, hoje):
     responsavel = dados['membros']['mariafernandacoleta@gmail.com']
     conteudo_pub = especificar_pub_defesa(pub['texto'], 'ANTHROPIC')
     nome_tarefa = conteudo_pub
