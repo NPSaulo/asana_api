@@ -38,8 +38,9 @@ def formatar_numeroprocesso(numeroprocesso):
     # Formato: XXXXXXX-XX.XXXX.X.XX.XXXX
     return f"{numeroprocesso[:7]}-{numeroprocesso[7:9]}.{numeroprocesso[9:13]}.{numeroprocesso[13]}.{numeroprocesso[14:16]}.{numeroprocesso[16:]}"
 
-nomes_colunas = ['data_dist', 'numeroprocesso', 'natureza', 'acao', 'obs', 'valor_pedido', 'valor_causa', 'cliente_principal', 'contrario_principal', 'n_vara', 'vara', 'comp_vara']
-processos = pd.read_excel(os.getenv('PATH_PROCESSOS'), skiprows=1, dtype={0: str}, names=nomes_colunas)
+colunas = ['data_protocolo', 'numero_cnj', 'natureza', 'cliente']
+processos = pd.read_excel(os.getenv('PATH_PROCESSOS'), dtype={0: str}, usecols=colunas)
+processos = processos.rename(columns={'numero_cnj':'numeroprocesso'})
 print(processos.info())
 
 with open('dados.json', 'r', encoding='utf-8') as f:

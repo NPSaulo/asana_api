@@ -20,6 +20,7 @@ def main(hoje, hoje_str):
     Faço essa separação pois há processos em nome dos sócios que não são deste escritório
     '''
     lista_processos = dados['processos'].iloc[:,1].tolist()
+    print(lista_processos)
     #print(lista_processos)
     cont_pubs = 0
     for pub in pubs:
@@ -32,7 +33,11 @@ def main(hoje, hoje_str):
             #4 DISTRIBUINDO PARA A EQUIPE
             area_processo = extrair_area_processo(dados, pub)
             #print(area_processo)
-            if area_processo == 'SERVIDOR PUBLICO':
+            if area_processo == 'ADMNISTRATIVO':
+                responsavel = dados['membros']['Saulo Niederle']
+                nome_tarefa = 'OUTROS'
+                criar_tarefa_geral(nome_tarefa, pub, dados, responsavel, hoje_str)
+            elif area_processo == 'TRIBUTARIO':
                 responsavel = dados['membros']['Saulo Niederle']
                 nome_tarefa = 'OUTROS'
                 criar_tarefa_geral(nome_tarefa, pub, dados, responsavel, hoje_str)

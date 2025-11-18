@@ -100,7 +100,7 @@ def criar_tarefa_geral(nome_tarefa, pub, dados, responsavel, hoje_str):
     df = dados['processos']
     numero_processo = pub['numeroprocessocommascara']
     processo_no_df = df.loc[df['numeroprocesso'] == numero_processo]
-    parte = processo_no_df['cliente_principal'].values[0]
+    parte = processo_no_df['cliente'].values[0]
     body = {"data": {"name": f"{nome_tarefa} - {numero_processo} - {parte}", 
             "due_on": hoje_str,
             "notes": pub['texto'],
@@ -135,7 +135,7 @@ def criar_tarefa_defesa(pub, dados, hoje):
     df = dados['processos']
     numero_processo = pub['numeroprocessocommascara']
     processo_no_df = df.loc[df['numeroprocesso'] == numero_processo]
-    parte = processo_no_df['cliente_principal'].values[0]
+    parte = processo_no_df['cliente'].values[0]
     body = {"data": {"name": f"{nome_tarefa} - {numero_processo} - {parte}", 
             "due_on": due_on_str,
             "notes": pub['texto'],
