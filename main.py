@@ -2,6 +2,7 @@ from funcoes import *
 from comunicapje import capturar_pubs
 from dados import dados
 import asana
+import time
 from asana.rest import ApiException
 from pprint import pprint
 from datetime import datetime, timedelta
@@ -33,7 +34,7 @@ def main(hoje, hoje_str):
             #4 DISTRIBUINDO PARA A EQUIPE
             area_processo = extrair_area_processo(dados, pub)
             #print(area_processo)
-            if area_processo == 'ADMNISTRATIVO':
+            if area_processo == 'ADMINISTRATIVO':
                 responsavel = dados['membros']['Saulo Niederle']
                 nome_tarefa = 'OUTROS'
                 criar_tarefa_geral(nome_tarefa, pub, dados, responsavel, hoje_str)
@@ -42,30 +43,41 @@ def main(hoje, hoje_str):
                 nome_tarefa = 'OUTROS'
                 criar_tarefa_geral(nome_tarefa, pub, dados, responsavel, hoje_str)
             else:
-                conteudo_pub = extrair_conteudo_pub(pub['texto'], cliente='ANTHROPIC')
+                conteudo_pub = extrair_conteudo_pub(pub['texto'], cliente=dados.get('llm_cliente', 'OPENAI'))  # Configurable LLM client
                 print(conteudo_pub)
                 if conteudo_pub == 'OUTROS':
-                    conteudo_pub = especificar_pub_outros(pub['texto'], cliente='ANTHROPIC')
+                    conteudo_pub = especificar_pub_outros(pub['texto'], cliente=dados.get('llm_cliente', 'OPENAI'))  # Configurable LLM client
                     print(conteudo_pub)
                     responsavel = dados['membros']['Alan Almeida']
                     criar_tarefa_geral(conteudo_pub, pub, dados, responsavel, hoje_str)
                 elif conteudo_pub == 'AUDIENCIA_CONCILIACAO': #temporariamente desativado
-                    #data_hora_audiencia = extrair_data_audiencia(pub['texto'], cliente='ANTHROPIC')
+                    #data_hora_audiencia = extrair_data_audiencia(pub['texto'], cliente=dados.get('llm_cliente', 'ANTHROPIC'))  # Configurable LLM client
                     #print(data_hora_audiencia)
                     #criar_tarefa_audiencia_conciliacao(dados, pub, data_audiencia) #aqui criar tanto tarefa para aud quanto para impugcont
                     pass
                 elif conteudo_pub == 'DEFESA_CONTRARRAZOES':
-                    criar_tarefa_defesa(pub, dados, hoje)
+                    #criar_tarefa_defesa(pub, dados, hoje) comentando pq Maria saiu então vai tudo para Alan
+                    responsavel = dados['membros']['Alan Almeida']
+                    criar_tarefa_geral(conteudo_pub, pub, dados, responsavel, hoje_str)
                 else:
                     responsavel = dados['membros']['Alan Almeida']
                     criar_tarefa_geral(conteudo_pub, pub, dados, responsavel, hoje_str)
 
     print(f"Número de publicações localizadas aqui: {cont_pubs}")
 
-if __name__ == '__main__': 
-    #hoje = datetime.now() - timedelta(days=1)
-    hoje = datetime.now()
-    hoje_str = hoje.strftime('%Y-%m-%d')   
-    main(hoje, hoje_str)
+if __name__ == '__main__':      
+    today = datetime.now()
+    hoje_str = today.strftime('%Y-%m-%d')
+    main(today, hoje_str)
+    '''
+    start_date = datetime(2025, 12, 20)
+    current_date = start_date
+    while current_date <= today:
+        hoje_str = current_date.strftime('%Y-%m-%d')
+        print(f"Running for {hoje_str}")
+        main(current_date, hoje_str)
+        current_date += timedelta(days=1)
+        time.sleep(5)
+    '''
 
     

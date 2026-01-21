@@ -48,3 +48,4 @@ with open('dados.json', 'r', encoding='utf-8') as f:
 
 dados['processos'] = processos
 dados['key'] = os.getenv('ASANA_KEY')
+dados['llm_cliente'] = os.getenv('LLM_CLIENTE', 'ANTHROPIC')  # Default to Anthropic, but configurable

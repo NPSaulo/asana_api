@@ -6,6 +6,7 @@ from datetime import datetime, timedelta
 from pprint import pprint
 from llm import llmstudio_enviar_prompt_especificar_pub, llmstudio_enviar_prompt_extrair_conteudo_pub
 from claude import anthropic_enviar_prompt_especificar_pub_outros, anthropic_enviar_prompt_extrair_conteudo_pub, anthropic_extrair_data_audiencia, anthropic_enviar_prompt_especificar_conteudo_pub_defesa
+from openai_llm import openai_enviar_prompt_especificar_pub_outros, openai_enviar_prompt_extrair_conteudo_pub, openai_extrair_data_audiencia, openai_enviar_prompt_especificar_conteudo_pub_defesa
 from dados import dados
 
 load_dotenv()
@@ -121,7 +122,7 @@ def criar_tarefa_geral(nome_tarefa, pub, dados, responsavel, hoje_str):
 
 def criar_tarefa_defesa(pub, dados, hoje):
     responsavel = dados['membros']['mariafernandacoleta@gmail.com']
-    conteudo_pub = especificar_pub_defesa(pub['texto'], 'ANTHROPIC')
+    conteudo_pub = especificar_pub_defesa(pub['texto'], dados.get('llm_cliente', 'ANTHROPIC'))  # Configurable LLM client
     nome_tarefa = conteudo_pub
     due_on = hoje + timedelta(days=2)
     due_on_str = due_on.strftime('%Y-%m-%d')
@@ -161,6 +162,9 @@ def extrair_conteudo_pub(pub, cliente):
     elif cliente == "ANTHROPIC":
         resposta = anthropic_enviar_prompt_extrair_conteudo_pub(pub)
         return resposta
+    elif cliente == "OPENAI":
+        resposta = openai_enviar_prompt_extrair_conteudo_pub(pub)
+        return resposta
 
 def especificar_pub_outros(pub, cliente):
     if cliente == "LLM_STUDIO":
@@ -169,10 +173,16 @@ def especificar_pub_outros(pub, cliente):
     elif cliente == "ANTHROPIC":
         resposta = anthropic_enviar_prompt_especificar_pub_outros(pub)
         return resposta
+    elif cliente == "OPENAI":
+        resposta = openai_enviar_prompt_especificar_pub_outros(pub)
+        return resposta
 
 def especificar_pub_defesa(pub, cliente):
     if cliente == 'ANTHROPIC':
         resposta = anthropic_enviar_prompt_especificar_conteudo_pub_defesa(pub)
+        return resposta
+    elif cliente == 'OPENAI':
+        resposta = openai_enviar_prompt_especificar_conteudo_pub_defesa(pub)
         return resposta
 
 def extrair_data_audiencia(pub, cliente):
@@ -181,4 +191,7 @@ def extrair_data_audiencia(pub, cliente):
         #return resposta
     if cliente == "ANTHROPIC":
         resposta = anthropic_extrair_data_audiencia(pub)
+        return resposta
+    elif cliente == "OPENAI":
+        resposta = openai_extrair_data_audiencia(pub)
         return resposta
